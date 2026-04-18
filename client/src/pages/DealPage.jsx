@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import PageSkeleton from "../components/PageSkeleton";
 import { fetchJson } from "../api";
 import { showToast } from "../components/ToastProvider";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 function StarRating({ value, onChange }) {
   const [hover, setHover] = useState(0);
@@ -45,7 +46,7 @@ function ReviewCard({ review, canDelete, onDelete }) {
   );
 }
 
-export default function DealPage({ user, token, onLogout, wishlist, planner, setWishlist, setPlanner }) {
+export default function DealPage({ user, token, onLogout, wishlist, planner, setWishlist, setPlanner, theme, onToggleTheme }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [deal, setDeal] = useState(null);
@@ -55,6 +56,8 @@ export default function DealPage({ user, token, onLogout, wishlist, planner, set
   const [reviews, setReviews] = useState([]);
   const [reviewForm, setReviewForm] = useState({ rating: 0, comment: "" });
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
+
+  usePageTitle(deal ? deal.title : "Deal");
 
   useEffect(() => {
     async function loadAll() {
@@ -74,12 +77,28 @@ export default function DealPage({ user, token, onLogout, wishlist, planner, set
     loadAll();
   }, [id]);
 
+  async function handleShare() {
+    const shareData = {
+      title: deal.title,
+      text: `${deal.title} — Save $${deal.savings} with Club District group deal!`,
+      url: window.location.href
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+      } else {
+        await navigator.clipboard.writeText(window.location.href);
+        showToast("Link copied to clipboard!", "success");
+      }
+    } catch {}
+  }
+
   if (loading) return <div className="page-shell"><PageSkeleton /></div>;
 
   if (error || !deal) {
     return (
       <div className="page-shell">
-        <Header user={user} onLogout={onLogout} wishlistCount={wishlist?.length || 0} plannerCount={planner?.length || 0} />
+        <Header user={user} onLogout={onLogout} wishlistCount={wishlist?.length || 0} plannerCount={planner?.length || 0} theme={theme} onToggleTheme={onToggleTheme} />
         <main id="main-content" style={{ textAlign: "center", padding: "4rem 1rem" }}>
           <h1>Deal Not Found</h1>
           <p>{error || "This deal may have expired."}</p>
@@ -140,7 +159,7 @@ export default function DealPage({ user, token, onLogout, wishlist, planner, set
 
   return (
     <div className="page-shell">
-      <Header user={user} onLogout={onLogout} wishlistCount={wishlist?.length || 0} plannerCount={planner?.length || 0} />
+      <Header user={user} onLogout={onLogout} wishlistCount={wishlist?.length || 0} plannerCount={planner?.length || 0} theme={theme} onToggleTheme={onToggleTheme} />
       <main id="main-content">
         <section className="section deal-detail-section">
           <button onClick={() => navigate(-1)} className="secondary-button deal-back-btn">
@@ -210,6 +229,15 @@ export default function DealPage({ user, token, onLogout, wishlist, planner, set
                   aria-label={isWishlist ? "Remove from wishlist" : "Save to wishlist"}
                 >
                   {isWishlist ? "🤍" : "♡"}
+                </button>
+                <button
+                  className="secondary-button"
+                  style={{ padding: "14px 18px" }}
+                  onClick={handleShare}
+                  aria-label="Share this deal"
+                  title="Share deal"
+                >
+                  🔗
                 </button>
               </div>
             </div>

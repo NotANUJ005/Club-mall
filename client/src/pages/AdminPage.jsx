@@ -5,6 +5,7 @@ import Footer from "../components/Footer";
 import PageSkeleton from "../components/PageSkeleton";
 import { fetchJson } from "../api";
 import { showToast } from "../components/ToastProvider";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 const DEAL_FIELDS = { title: "", category: "fashion", description: "", price: "", savings: "", members: "0", badge: "", eta: "" };
 const STORE_FIELDS = { title: "", floor: "1", type: "Fashion", description: "", hours: "" };
@@ -53,7 +54,7 @@ function ConfirmModal({ message, onConfirm, onCancel, submitting }) {
   );
 }
 
-export default function AdminPage({ user, token, onLogout }) {
+export default function AdminPage({ user, token, onLogout, theme, onToggleTheme }) {
   const [tab, setTab] = useState("deals");
   const [deals, setDeals] = useState([]);
   const [stores, setStores] = useState([]);
@@ -71,6 +72,8 @@ export default function AdminPage({ user, token, onLogout }) {
   const [eventForm, setEventForm] = useState(EVENT_FIELDS);
 
   const isAdmin = user?.isAdmin;
+
+  usePageTitle("Admin Dashboard");
 
   useEffect(() => {
     async function load() {
@@ -237,7 +240,7 @@ export default function AdminPage({ user, token, onLogout }) {
 
   return (
     <div className="page-shell">
-      <Header user={user} onLogout={onLogout} wishlistCount={0} plannerCount={0} />
+      <Header user={user} onLogout={onLogout} wishlistCount={0} plannerCount={0} theme={theme} onToggleTheme={onToggleTheme} />
       <main id="main-content">
         <section className="section" style={{ padding: "2rem 0" }}>
           <div className="admin-header">

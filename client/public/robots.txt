@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# Disallow admin and API routes from search engines
+Disallow: /admin
+Disallow: /api/
+
 Sitemap: https://clubdistrict.com/sitemap.xml

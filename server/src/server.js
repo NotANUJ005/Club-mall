@@ -1,6 +1,7 @@
 import "dotenv/config";
 import cors from "cors";
 import express from "express";
+import rateLimit from "express-rate-limit";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import contentRoutes from "./routes/contentRoutes.js";
@@ -11,8 +12,9 @@ import { ensureSeedData } from "./services/seedService.js";
 
 const app = express();
 const port = process.env.PORT || 5000;
+const isProduction = process.env.NODE_ENV === "production";
 
-// Restrict CORS to known frontend origins (comma-separated in env var)
+// ─── CORS ────────────────────────────────────────────────────────────────────
 const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:5173,http://localhost:5174")
   .split(",")
   .map((o) => o.trim());
@@ -20,7 +22,6 @@ const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:5173,ht
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow server-to-server (no origin) and listed origins
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -31,32 +32,77 @@ app.use(
   })
 );
 
-// Basic security headers without helmet dependency
+// ─── Security Headers ─────────────────────────────────────────────────────────
 app.use((req, res, next) => {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("X-XSS-Protection", "1; mode=block");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  if (isProduction) {
+    res.setHeader("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
+  }
   next();
 });
 
-app.use(express.json({ limit: "1mb" }));
-
-
-app.get("/api/health", (req, res) => {
-  res.json({ status: "ok" });
+// ─── Rate Limiting ────────────────────────────────────────────────────────────
+// Global limiter
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,  // 15 minutes
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many requests, please try again later." }
 });
 
-app.use("/api", authRoutes);
+// Strict limiter for auth endpoints
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,  // 15 minutes
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { message: "Too many authentication attempts, please try again in 15 minutes." }
+});
+
+app.use(globalLimiter);
+app.use(express.json({ limit: "1mb" }));
+
+// ─── Health Check ─────────────────────────────────────────────────────────────
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok",
+    environment: process.env.NODE_ENV || "development",
+    timestamp: new Date().toISOString()
+  });
+});
+
+// ─── Routes ───────────────────────────────────────────────────────────────────
+app.use("/api", authLimiter, authRoutes);
 app.use("/api", contentRoutes);
 app.use("/api", reviewRoutes);
 app.use("/api", subscriberRoutes);
 app.use("/api", userRoutes);
 
-app.use((error, req, res, next) => {
-  console.error(error);
-  res.status(500).json({ message: "Something went wrong on the server." });
+// ─── 404 for unknown /api/* routes ────────────────────────────────────────────
+app.use("/api/*", (req, res) => {
+  res.status(404).json({ message: "API endpoint not found." });
 });
 
+// ─── Global Error Handler ─────────────────────────────────────────────────────
+app.use((error, req, res, next) => {
+  const status = error.status || error.statusCode || 500;
+
+  if (isProduction) {
+    // Never expose stack traces in production
+    console.error(`[${new Date().toISOString()}] ${req.method} ${req.path} → ${status}: ${error.message}`);
+    return res.status(status).json({ message: status === 500 ? "Something went wrong on the server." : error.message });
+  }
+
+  console.error(error);
+  return res.status(status).json({ message: error.message, stack: error.stack });
+});
+
+// ─── Boot ─────────────────────────────────────────────────────────────────────
 const connected = await connectDB();
 
 if (connected) {
@@ -64,5 +110,5 @@ if (connected) {
 }
 
 app.listen(port, () => {
-  console.log(`Club District API running at http://localhost:${port}`);
+  console.log(`[${process.env.NODE_ENV || "development"}] Club District API running at http://localhost:${port}`);
 });

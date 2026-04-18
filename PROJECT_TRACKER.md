@@ -1,19 +1,19 @@
 # Club-Mall Project Tracker
 
-This document tracks all features added, modified, and pending implementation.
-Auto-updated with every development batch.
+> Last updated: Auto-updated every development batch. Production-ready status below.
 
 ---
 
 ## ✅ Completed — Batch 1 (Initial Build)
 
-### Foundational Setup
-- [x] Initialized Git repository and synced with GitHub (`NotANUJ005/Club-mall`)
+### Core Infrastructure
+- [x] Git repository initialized and synced with GitHub (`NotANUJ005/Club-mall`)
 - [x] Full responsive layout with glassmorphism design system
 - [x] Toast notification system (`ToastProvider`)
 - [x] Page skeleton loading state (`PageSkeleton`)
 - [x] Professional footer with navigation groups
 - [x] 404 Not Found page
+- [x] CORS restriction to known origins
 
 ### Core Pages
 - [x] **Home Page** — Hero, Deals, Planner, Store Directory, Events, Membership Calculator, Newsletter, FAQ
@@ -21,116 +21,126 @@ Auto-updated with every development batch.
 
 ### Backend
 - [x] MongoDB models: `User`, `Deal`, `Store`, `Event`, `Subscriber`
-- [x] Auth routes: register, login, `/api/auth/me`, forgot & reset password
-- [x] Content routes: `GET /api/deals`, `GET /api/stores`, `GET /api/events`
+- [x] Auth routes with JWT session management
+- [x] Content routes for deals, stores, events
 - [x] Subscriber route with duplicate validation
-- [x] JWT-based authentication middleware
 - [x] Wishlist/planner sync (`PATCH /api/users/preferences`)
 
 ---
 
 ## ✅ Completed — Batch 2 (Feature Expansion)
 
-### New Pages & Routes
-- [x] **Deal Details Page (`/deals/:id`)** — Dynamic route with rich UI
-- [x] **User Profile Page (`/profile`)** — Initial scaffolding
-- [x] **Admin Dashboard (`/admin`)** — Access-controlled stub
-- [x] `isAdmin` flag added to `User` model and auth endpoints
-
-### Navigation
-- [x] Deal titles in `DealsSection` link to `/deals/:id`
-- [x] User pill in `Header` links to `/profile`
-- [x] Profile link added to mobile menu
-
-### Backend
-- [x] `GET /api/deals/:id` endpoint added
+- [x] **Deal Details Page (`/deals/:id`)** with wishlist/planner toggle
+- [x] **User Profile Page (`/profile`)**
+- [x] **Admin Dashboard (`/admin`)**
+- [x] `isAdmin` flag on `User` model and all auth endpoints
+- [x] `GET /api/deals/:id` endpoint
 
 ---
 
 ## ✅ Completed — Batch 3 (Profile Polish & UX)
 
-### Profile Page — Fully Rebuilt
-- [x] Avatar initial (gradient tile with user's first letter)
-- [x] Inline **name editing** with save/cancel
+- [x] Inline **name editing** with save/cancel flow
 - [x] **Change Password** form with current-password verification
 - [x] Wishlist/Planner **tabbed interface** with live counts
-- [x] Each deal in lists links to its Deal Detail page
-- [x] Admin badge + link to Admin Dashboard for admin users
-
-### Backend — New User Endpoints
-- [x] `PATCH /api/users/profile` — Update display name
-- [x] `PATCH /api/users/change-password` — Verified password change
-- [x] Fixed: `isAdmin` missing from `sanitizeUser` in `userRoutes.js`
-
-### Micro-Interactions & Design
-- [x] Deal cards have smooth **hover lift animation**
-- [x] Back button on Deal Details uses `navigate(-1)` (browser history)
-- [x] "My Profile" link added to the site Footer
-- [x] Full Profile Page CSS system in `styles.css`
+- [x] `PATCH /api/users/profile` & `PATCH /api/users/change-password`
+- [x] Fixed: `isAdmin` missing from `userRoutes.js` `sanitizeUser`
+- [x] Deal card **hover lift animation**
+- [x] Back button uses `navigate(-1)` (browser history)
+- [x] "My Profile" in Footer
 
 ---
 
-## ✅ Completed — Batch 4 (Major Autonomous Expansion)
+## ✅ Completed — Batch 4 (Major Feature Expansion)
 
 ### Dark Mode
-- [x] 🌙 **Full Dark Mode** — persisted in `localStorage`, toggled via Header button
-- [x] CSS `[data-theme="dark"]` variable overrides for all components
-- [x] Smooth theme persistence across page reloads
+- [x] Full dark mode — CSS `[data-theme="dark"]` variable overrides
+- [x] 🌙/☀️ toggle in Header, persisted in `localStorage`
 
 ### Admin Dashboard — Full CRUD
-- [x] **`requireAdmin` middleware** added to `authMiddleware.js`
-- [x] **Deals** — Create, Edit, Delete from Admin UI
-- [x] **Stores** — Create, Edit, Delete from Admin UI
-- [x] **Events** — Create, Delete from Admin UI
-- [x] Stats summary bar (deal/store/event counts)
-- [x] Tabbed interface (Deals / Stores / Events)
-- [x] Modal forms for Create/Edit with validation
-- [x] Confirm-delete modal with danger styling
-- [x] All admin API routes secured with `requireAuth + requireAdmin`
+- [x] `requireAdmin` middleware added to `authMiddleware.js`
+- [x] Deals, Stores, Events — Create, Edit/Update, Delete
+- [x] Modal forms with validation and confirm-delete dialog
+- [x] All admin API endpoints protected server-side
 
 ### Global Search
-- [x] 🔍 **Search Modal** — opened from Header (keyboard shortcut `Esc` to close)
-- [x] Real-time filtering across **Deals** and **Stores**
-- [x] Grouped, linked results with category badges
-- [x] Available on both desktop and mobile nav
+- [x] 🔍 Search modal (Spotlight-style) in Header
+- [x] Real-time filtering across Deals and Stores
+- [x] `Esc` keyboard shortcut to close
 
-### Ratings & Reviews
-- [x] `Review` MongoDB model (dealId, userId, rating 1–5, comment)
-- [x] `reviewRoutes.js` — `GET`, `POST`, `DELETE`
-- [x] Registered in `server.js`
-- [x] **Star Rating UI** — interactive 5-star picker with hover effect
-- [x] Review form on Deal Details page (Auth required)
-- [x] Review list with avatar initials, star display, dates
-- [x] Users can delete their own reviews; Admins can delete any review
+### Reviews & Ratings
+- [x] `Review` Mongoose model with compound index
+- [x] `GET`, `POST`, `DELETE` review API routes
+- [x] Interactive 5-star picker with hover animation
 - [x] One review per user per deal enforced
+- [x] Admins can delete any review
 
-### New Pages & Routing
-- [x] **`/stores/:id`** — Store Details page with icon, open/closed status, hours card
-- [x] Store titles in `DirectorySection` now link to store detail pages
-- [x] `GET /api/stores/:id` backend endpoint
+### New Pages
+- [x] **Store Details (`/stores/:id`)** — icon, open/closed, info cards
+- [x] `GET /api/stores/:id` endpoint
+- [x] Store titles in Directory link to detail pages
 
-### Design Improvements
-- [x] Fully rebuilt **Deal Details page** with progress bar, better layout, emoji icons
-- [x] Admin link added to Header mobile menu for admin users
-- [x] All new components have comprehensive responsive CSS
+---
+
+## ✅ Completed — Batch 5 (Production Hardening)
+
+### Security
+- [x] **Rate limiting** — `express-rate-limit` installed and configured
+  - Global limiter: 200 req / 15 min
+  - Auth limiter: 20 req / 15 min (applied to login/register)
+- [x] Extra security headers: `X-XSS-Protection`, `Permissions-Policy`
+- [x] `Strict-Transport-Security` header in production mode
+- [x] Structured error logging with timestamp and method/path context
+- [x] Stack traces hidden in production error responses
+- [x] 404 handler for unknown `/api/*` routes
+- [x] `NODE_ENV`-aware environment management
+- [x] `.env.example` with all required variables documented
+
+### Frontend Architecture
+- [x] **React Error Boundary** — catches all JS runtime errors gracefully
+- [x] **Lazy loading** — all pages loaded with `React.lazy()` + `Suspense` for code splitting
+- [x] **ScrollToTop** — resets scroll position on every route change
+- [x] **`usePageTitle` hook** — dynamic `<title>` per page/deal/store
+- [x] **Skip to main content** link — keyboard/screen reader accessibility
+- [x] **`:focus-visible`** styles for keyboard navigation
+- [x] Password strength meter on Register page
+- [x] Show/hide password toggle on all password fields
+- [x] `autoComplete` attributes on all auth inputs
+- [x] **Web Share API** share button on Deal Details page (fallback to clipboard)
+
+### Build & Deployment
+- [x] Vite config updated with manual chunk splitting (vendor-react separate chunk)
+- [x] `robots.txt` — blocks `/admin` and `/api/` from search indexing
+- [x] `_redirects` file for SPA routing on Netlify/Cloudflare Pages
+- [x] `form-message.is-success` CSS class for positive feedback
 
 ---
 
 ## ⏳ Pending / Backlog
 
 ### Payment & Checkout (Requires Stripe API Key)
-- [ ] Shopping cart state management
-- [ ] Stripe integration for deal purchases
+- [ ] Shopping cart state (`CartContext`)
+- [ ] Stripe integration for deal purchases and subscriptions
+- [ ] Order history model and route
 
-### Auth Upgrades (Require 3rd Party Keys)
-- [ ] **Google OAuth** one-click login (requires Google Cloud credentials)
-- [ ] **Real Email Verification** on sign-up (requires SMTP/Resend API key)
+### Auth Upgrades (Require External Keys)
+- [ ] **Google OAuth** one-click sign-in (requires Google Cloud credentials)
+- [ ] **Real email verification** on sign-up (requires SMTP/Resend API key)
+- [ ] **Magic link / passwordless login**
 
 ### Admin Enhancements
-- [ ] Image upload for deal/store/event cards (requires file storage like Cloudinary)
+- [ ] Image upload for deal/store/event cards (requires Cloudinary or S3)
 - [ ] User management tab (view all users, toggle `isAdmin`)
-- [ ] Analytics tab (subscriber count, most wishlisted deals)
+- [ ] Analytics dashboard (subscriber count, most wishlisted deals, revenue)
+- [ ] Rich text editor for deal descriptions
+
+### Performance & SEO
+- [ ] Sitemap XML generation (`/sitemap.xml` endpoint)
+- [ ] Open Graph image generation per deal
+- [ ] Pagination for deal/store listings
+- [ ] Infinite scroll or load-more on homepage sections
 
 ### Platform Engagement
 - [ ] Notification/activity feed for group deal updates
-- [ ] Pagination for deals and stores when DB has many records
+- [ ] Social sharing with custom Open Graph previews
+- [ ] Deal countdown timers with real scheduling

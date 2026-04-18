@@ -4,18 +4,21 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import PageSkeleton from "../components/PageSkeleton";
 import { fetchJson } from "../api";
+import { usePageTitle } from "../hooks/usePageTitle";
 
 const TYPE_ICONS = {
   Fashion: "👗", Beauty: "💄", Tech: "🎧", Dining: "🍽️",
   Cafe: "☕", Wellness: "🧘", Lifestyle: "🛋️", Family: "👨‍👩‍👧"
 };
 
-export default function StorePage({ user, onLogout, wishlist, planner }) {
+export default function StorePage({ user, onLogout, wishlist, planner, theme, onToggleTheme }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [store, setStore] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  usePageTitle(store ? store.title : "Store");
 
   useEffect(() => {
     async function loadStore() {

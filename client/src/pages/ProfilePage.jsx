@@ -5,11 +5,14 @@ import Footer from "../components/Footer";
 import PageSkeleton from "../components/PageSkeleton";
 import { fetchJson } from "../api";
 import { showToast } from "../components/ToastProvider";
+import { usePageTitle } from "../hooks/usePageTitle";
 
-export default function ProfilePage({ user, setUser, token, onLogout, wishlist, planner }) {
+export default function ProfilePage({ user, setUser, token, onLogout, wishlist, planner, theme, onToggleTheme }) {
   const navigate = useNavigate();
   const [deals, setDeals] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  usePageTitle("My Profile");
 
   // Edit name state
   const [nameEdit, setNameEdit] = useState(false);
@@ -85,7 +88,7 @@ export default function ProfilePage({ user, setUser, token, onLogout, wishlist, 
 
   return (
     <div className="page-shell">
-      <Header user={user} onLogout={onLogout} wishlistCount={wishlist.length} plannerCount={planner.length} />
+      <Header user={user} onLogout={onLogout} wishlistCount={wishlist.length} plannerCount={planner.length} theme={theme} onToggleTheme={onToggleTheme} />
       <main id="main-content">
         <section className="section profile-section">
 

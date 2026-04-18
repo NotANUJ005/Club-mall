@@ -158,6 +158,39 @@ body {
     linear-gradient(180deg, #fcf7f0 0%, #f2eadf 100%);
 }
 
+/* ─── Accessibility: Skip to main content ────────────────────── */
+.skip-link {
+  position: absolute;
+  top: -60px;
+  left: 16px;
+  z-index: 9999;
+  padding: 10px 20px;
+  border-radius: 0 0 12px 12px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: top 180ms ease;
+}
+.skip-link:focus {
+  top: 0;
+  outline: 3px solid #fff;
+  outline-offset: 2px;
+}
+
+/* ─── Focus visible — keyboard navigation ────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ─── Form message success variant ──────────────────────────── */
+.form-message.is-success {
+  color: var(--success, #226742);
+}
+
 body::before {
   content: "";
   position: fixed;
