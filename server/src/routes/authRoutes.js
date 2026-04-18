@@ -22,7 +22,8 @@ function sanitizeUser(user) {
     name: user.name,
     email: user.email,
     wishlist: user.wishlist || [],
-    planner: user.planner || []
+    planner: user.planner || [],
+    isAdmin: user.isAdmin || false
   };
 }
 
@@ -78,7 +79,8 @@ router.post("/auth/register", async (req, res, next) => {
       wishlist: [],
       planner: [],
       resetPasswordToken: "",
-      resetPasswordExpires: null
+      resetPasswordExpires: null,
+      isAdmin: false
     };
 
     demoStore.users.push(user);

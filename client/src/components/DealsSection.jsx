@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { showToast } from "./ToastProvider";
 
 function currency(value) {
@@ -65,7 +66,9 @@ export default function DealsSection({
                   <span className="deal-eta">{deal.eta}</span>
                 </div>
                 <div>
-                  <h3>{deal.title}</h3>
+                  <Link to={`/deals/${deal._id}`} style={{textDecoration: "none", color: "inherit"}}>
+                    <h3>{deal.title}</h3>
+                  </Link>
                   <p>{deal.description}</p>
                 </div>
                 <div className="deal-stats">

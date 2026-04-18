@@ -20,6 +20,23 @@ router.get("/deals", async (req, res, next) => {
   }
 });
 
+router.get("/deals/:id", async (req, res, next) => {
+  try {
+    if (mongoose.connection.readyState === 1) {
+      const deal = await Deal.findById(req.params.id);
+      if (!deal) return res.status(404).json({ message: "Deal not found" });
+      res.json({ data: deal });
+    } else {
+      const allDeals = withDemoIds(seedDeals, "deal");
+      const deal = allDeals.find(d => d._id === req.params.id);
+      if (!deal) return res.status(404).json({ message: "Deal not found" });
+      res.json({ data: deal });
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get("/stores", async (req, res, next) => {
   try {
     const data = mongoose.connection.readyState === 1 ? await Store.find().sort({ createdAt: 1 }) : withDemoIds(seedStores, "store");

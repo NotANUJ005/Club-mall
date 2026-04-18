@@ -8,7 +8,8 @@ const userSchema = new mongoose.Schema(
     wishlist: { type: [String], default: [] },
     planner: { type: [String], default: [] },
     resetPasswordToken: { type: String, default: "" },
-    resetPasswordExpires: { type: Date, default: null }
+    resetPasswordExpires: { type: Date, default: null },
+    isAdmin: { type: Boolean, default: false }
   },
   { timestamps: true }
 );

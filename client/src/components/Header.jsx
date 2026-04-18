@@ -44,10 +44,10 @@ export default function Header({ menuOpen, onToggleMenu, wishlistCount, plannerC
           )}
           {user ? (
             <>
-              <div className="user-pill" aria-label={`Logged in as ${user.name}`}>
+              <Link to="/profile" className="user-pill" style={{textDecoration: "none", color: "inherit", cursor: "pointer"}} aria-label={`Logged in as ${user.name}`}>
                 <strong>{user.name}</strong>
                 <small>{user.email}</small>
-              </div>
+              </Link>
               <button className="secondary-button" type="button" onClick={onLogout} aria-label="Log out">
                 Log out
               </button>
@@ -83,9 +83,12 @@ export default function Header({ menuOpen, onToggleMenu, wishlistCount, plannerC
         <a href="#events" onClick={handleNavClick}>Events</a>
         <a href="#membership" onClick={handleNavClick}>Membership</a>
         {user ? (
-          <button className="secondary-button" type="button" onClick={onLogout}>
-            Log out
-          </button>
+          <>
+            <Link to="/profile" onClick={handleNavClick}>Profile</Link>
+            <button className="secondary-button" style={{margin: "1rem", width: "calc(100% - 2rem)"}} type="button" onClick={onLogout}>
+              Log out
+            </button>
+          </>
         ) : (
           <>
             <Link to="/login" onClick={handleNavClick}>Login</Link>

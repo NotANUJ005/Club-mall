@@ -6,6 +6,9 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import HomePage from "./pages/HomePage";
 import NotFoundPage from "./pages/NotFoundPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
+import ProfilePage from "./pages/ProfilePage";
+import AdminPage from "./pages/AdminPage";
+import DealPage from "./pages/DealPage";
 import ToastProvider from "./components/ToastProvider";
 
 const wishlistStorageKey = "clubDistrictWishlist";
@@ -165,6 +168,9 @@ export default function App() {
         />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
+        <Route path="/profile" element={<ProfilePage user={user} onLogout={() => clearSession()} wishlist={wishlist} planner={planner} />} />
+        <Route path="/admin" element={<AdminPage user={user} onLogout={() => clearSession()} />} />
+        <Route path="/deals/:id" element={<DealPage user={user} onLogout={() => clearSession()} wishlist={wishlist} planner={planner} setWishlist={setWishlist} setPlanner={setPlanner} />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>
