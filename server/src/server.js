@@ -4,6 +4,7 @@ import express from "express";
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/authRoutes.js";
 import contentRoutes from "./routes/contentRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
 import subscriberRoutes from "./routes/subscriberRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import { ensureSeedData } from "./services/seedService.js";
@@ -47,6 +48,7 @@ app.get("/api/health", (req, res) => {
 
 app.use("/api", authRoutes);
 app.use("/api", contentRoutes);
+app.use("/api", reviewRoutes);
 app.use("/api", subscriberRoutes);
 app.use("/api", userRoutes);
 

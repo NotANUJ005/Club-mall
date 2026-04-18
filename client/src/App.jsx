@@ -9,11 +9,13 @@ import ResetPasswordPage from "./pages/ResetPasswordPage";
 import ProfilePage from "./pages/ProfilePage";
 import AdminPage from "./pages/AdminPage";
 import DealPage from "./pages/DealPage";
+import StorePage from "./pages/StorePage";
 import ToastProvider from "./components/ToastProvider";
 
 const wishlistStorageKey = "clubDistrictWishlist";
 const plannerStorageKey = "clubDistrictPlanner";
 const tokenStorageKey = "clubDistrictToken";
+const themeStorageKey = "clubDistrictTheme";
 
 function getInitialWishlist() {
   const saved = localStorage.getItem(wishlistStorageKey);
@@ -33,12 +35,18 @@ export default function App() {
   const [wishlist, setWishlist] = useState(() => getInitialWishlist());
   const [planner, setPlanner] = useState(() => getInitialPlanner());
   const [authLoading, setAuthLoading] = useState(Boolean(localStorage.getItem(tokenStorageKey)));
+  const [theme, setTheme] = useState(() => localStorage.getItem(themeStorageKey) || "light");
   const initialMergeDone = useRef(false);
 
-  // Initialize toast system
+  // Apply dark/light theme to root element
   useEffect(() => {
-    // ToastProvider registers window.__cdToast imperatively on import
-  }, []);
+    document.documentElement.setAttribute("data-theme", theme);
+    localStorage.setItem(themeStorageKey, theme);
+  }, [theme]);
+
+  function toggleTheme() {
+    setTheme(t => t === "light" ? "dark" : "light");
+  }
 
   useEffect(() => {
     localStorage.setItem(wishlistStorageKey, JSON.stringify(wishlist));
@@ -128,6 +136,9 @@ export default function App() {
     }
   }
 
+  // Shared header props
+  const headerProps = { theme, onToggleTheme: toggleTheme };
+
   if (authLoading) {
     return (
       <div className="auth-loading-screen" role="status" aria-live="polite">
@@ -152,6 +163,7 @@ export default function App() {
               setWishlist={setWishlist}
               setPlanner={setPlanner}
               onSyncPreferences={syncPreferences}
+              headerProps={headerProps}
               onLogout={() => {
                 clearSession();
                 if (location.pathname !== "/") {
@@ -168,9 +180,10 @@ export default function App() {
         />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
         <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/profile" element={<ProfilePage user={user} setUser={setUser} token={token} onLogout={() => clearSession()} wishlist={wishlist} planner={planner} />} />
-        <Route path="/admin" element={<AdminPage user={user} onLogout={() => clearSession()} />} />
-        <Route path="/deals/:id" element={<DealPage user={user} onLogout={() => clearSession()} wishlist={wishlist} planner={planner} setWishlist={setWishlist} setPlanner={setPlanner} />} />
+        <Route path="/profile" element={<ProfilePage user={user} setUser={setUser} token={token} onLogout={clearSession} wishlist={wishlist} planner={planner} {...headerProps} />} />
+        <Route path="/admin" element={<AdminPage user={user} token={token} onLogout={clearSession} {...headerProps} />} />
+        <Route path="/deals/:id" element={<DealPage user={user} token={token} onLogout={clearSession} wishlist={wishlist} planner={planner} setWishlist={setWishlist} setPlanner={setPlanner} {...headerProps} />} />
+        <Route path="/stores/:id" element={<StorePage user={user} onLogout={clearSession} wishlist={wishlist} planner={planner} {...headerProps} />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </>

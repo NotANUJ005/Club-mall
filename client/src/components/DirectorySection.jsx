@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { showToast } from "./ToastProvider";
 
 /**
@@ -87,7 +88,9 @@ export default function DirectorySection({ stores, filters, onSearchChange, onFl
                   )}
                 </div>
                 <div>
-                  <h3>{store.title}</h3>
+                  <Link to={`/stores/${store._id}`} style={{ textDecoration: "none", color: "inherit" }}>
+                    <h3>{store.title}</h3>
+                  </Link>
                   <p>{store.description}</p>
                 </div>
                 <div className="store-meta">

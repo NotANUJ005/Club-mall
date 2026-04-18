@@ -36,3 +36,10 @@ export async function requireAuth(req, res, next) {
     return res.status(401).json({ message: "Authentication required." });
   }
 }
+
+export function requireAdmin(req, res, next) {
+  if (!req.user || !req.user.isAdmin) {
+    return res.status(403).json({ message: "Admin access required." });
+  }
+  return next();
+}

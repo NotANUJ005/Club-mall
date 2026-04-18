@@ -50,7 +50,8 @@ export default function HomePage({
   setWishlist,
   setPlanner,
   onSyncPreferences,
-  onLogout
+  onLogout,
+  headerProps
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [deals, setDeals] = useState([]);
@@ -210,6 +211,7 @@ export default function HomePage({
         plannerCount={planner.length}
         user={user}
         onLogout={onLogout}
+        {...(headerProps || {})}
       />
 
       <main id="main-content">

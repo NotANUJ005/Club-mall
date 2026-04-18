@@ -1,6 +1,10 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+import SearchModal from "./SearchModal";
 
-export default function Header({ menuOpen, onToggleMenu, wishlistCount, plannerCount, user, onLogout }) {
+export default function Header({ menuOpen, onToggleMenu, wishlistCount, plannerCount, user, onLogout, theme, onToggleTheme }) {
+  const [searchOpen, setSearchOpen] = useState(false);
+
   function handleNavClick() {
     if (menuOpen) onToggleMenu();
   }
@@ -8,7 +12,7 @@ export default function Header({ menuOpen, onToggleMenu, wishlistCount, plannerC
   return (
     <>
       <header className="site-header" role="banner">
-        <a className="brand" href="#top" aria-label="Club District home">
+        <a className="brand" href="/" aria-label="Club District home">
           <span className="brand-mark" aria-hidden="true">CD</span>
           <span>
             <strong>Club District</strong>
@@ -17,34 +21,53 @@ export default function Header({ menuOpen, onToggleMenu, wishlistCount, plannerC
         </a>
 
         <nav className="desktop-nav" aria-label="Primary navigation">
-          <a href="#discover">Discover</a>
-          <a href="#deals">Group Deals</a>
-          <a href="#directory">Directory</a>
-          <a href="#events">Events</a>
-          <a href="#membership">Membership</a>
+          <a href="/#discover">Discover</a>
+          <a href="/#deals">Group Deals</a>
+          <a href="/#directory">Directory</a>
+          <a href="/#events">Events</a>
+          <a href="/#membership">Membership</a>
         </nav>
 
         <div className="header-actions">
+          {/* Search */}
+          <button
+            className="ghost-button badge-button"
+            onClick={() => setSearchOpen(true)}
+            aria-label="Open search"
+            id="searchButton"
+          >
+            🔍
+          </button>
+
+          {/* Dark mode toggle */}
+          <button
+            className="ghost-button"
+            onClick={onToggleTheme}
+            aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+            id="themeToggle"
+            title={theme === "dark" ? "Light mode" : "Dark mode"}
+          >
+            {theme === "dark" ? "☀️" : "🌙"}
+          </button>
+
           {wishlistCount > 0 && (
-            <a className="ghost-button badge-button" href="#deals" aria-label={`${wishlistCount} items wishlisted`}>
+            <a className="ghost-button badge-button" href="/#deals" aria-label={`${wishlistCount} items wishlisted`}>
               <span aria-hidden="true">🤍</span>
               <span className="badge-count">{wishlistCount}</span>
             </a>
           )}
           {plannerCount > 0 && (
-            <a className="ghost-button badge-button" href="#deals" aria-label={`${plannerCount} items in planner`}>
+            <a className="ghost-button badge-button" href="/#deals" aria-label={`${plannerCount} items in planner`}>
               <span aria-hidden="true">📋</span>
               <span className="badge-count">{plannerCount}</span>
             </a>
           )}
           {wishlistCount === 0 && plannerCount === 0 && (
-            <a className="ghost-button" href="#deals">
-              Saves
-            </a>
+            <a className="ghost-button" href="/#deals">Saves</a>
           )}
           {user ? (
             <>
-              <Link to="/profile" className="user-pill" style={{textDecoration: "none", color: "inherit", cursor: "pointer"}} aria-label={`Logged in as ${user.name}`}>
+              <Link to="/profile" className="user-pill" style={{ textDecoration: "none", color: "inherit", cursor: "pointer" }} aria-label={`Logged in as ${user.name}`}>
                 <strong>{user.name}</strong>
                 <small>{user.email}</small>
               </Link>
@@ -54,12 +77,8 @@ export default function Header({ menuOpen, onToggleMenu, wishlistCount, plannerC
             </>
           ) : (
             <>
-              <Link className="secondary-button auth-link" to="/login">
-                Login
-              </Link>
-              <Link className="primary-button auth-link" to="/register">
-                Register
-              </Link>
+              <Link className="secondary-button auth-link" to="/login">Login</Link>
+              <Link className="primary-button auth-link" to="/register">Register</Link>
             </>
           )}
           <button
@@ -77,15 +96,19 @@ export default function Header({ menuOpen, onToggleMenu, wishlistCount, plannerC
       </header>
 
       <nav className={`mobile-menu ${menuOpen ? "is-open" : ""}`} id="mobileMenu" aria-label="Mobile navigation">
-        <a href="#discover" onClick={handleNavClick}>Discover</a>
-        <a href="#deals" onClick={handleNavClick}>Group Deals</a>
-        <a href="#directory" onClick={handleNavClick}>Directory</a>
-        <a href="#events" onClick={handleNavClick}>Events</a>
-        <a href="#membership" onClick={handleNavClick}>Membership</a>
+        <a href="/#discover" onClick={handleNavClick}>Discover</a>
+        <a href="/#deals" onClick={handleNavClick}>Group Deals</a>
+        <a href="/#directory" onClick={handleNavClick}>Directory</a>
+        <a href="/#events" onClick={handleNavClick}>Events</a>
+        <a href="/#membership" onClick={handleNavClick}>Membership</a>
+        <button className="ghost-button" style={{ justifyContent: "flex-start" }} onClick={() => { setSearchOpen(true); handleNavClick(); }}>
+          🔍 Search
+        </button>
         {user ? (
           <>
             <Link to="/profile" onClick={handleNavClick}>Profile</Link>
-            <button className="secondary-button" style={{margin: "1rem", width: "calc(100% - 2rem)"}} type="button" onClick={onLogout}>
+            {user.isAdmin && <Link to="/admin" onClick={handleNavClick}>Admin</Link>}
+            <button className="secondary-button" style={{ margin: "0.5rem 1rem", width: "calc(100% - 2rem)" }} type="button" onClick={onLogout}>
               Log out
             </button>
           </>
@@ -96,6 +119,8 @@ export default function Header({ menuOpen, onToggleMenu, wishlistCount, plannerC
           </>
         )}
       </nav>
+
+      {searchOpen && <SearchModal onClose={() => setSearchOpen(false)} />}
     </>
   );
 }
