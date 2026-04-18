@@ -8,6 +8,7 @@ const footerLinks = {
     { label: "Membership", href: "#membership" }
   ],
   Account: [
+    { label: "My Profile", to: "/profile" },
     { label: "Register", to: "/register" },
     { label: "Login", to: "/login" },
     { label: "Forgot Password", to: "/forgot-password" }

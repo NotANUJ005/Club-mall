@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import PageSkeleton from "../components/PageSkeleton";
@@ -7,6 +7,7 @@ import { fetchJson } from "../api";
 
 export default function DealPage({ user, onLogout, wishlist, planner, setWishlist, setPlanner }) {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [deal, setDeal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -59,7 +60,9 @@ export default function DealPage({ user, onLogout, wishlist, planner, setWishlis
       <Header user={user} onLogout={onLogout} wishlistCount={wishlist.length} plannerCount={planner.length} />
       <main id="main-content">
         <section className="section" style={{maxWidth: "900px", margin: "0 auto", padding: "4rem 1rem"}}>
-          <Link to="/" style={{color: "var(--foreground)", textDecoration: "none", marginBottom: "2rem", display: "inline-block"}}>← Back</Link>
+          <button onClick={() => navigate(-1)} className="secondary-button" style={{marginBottom: "2rem", display: "inline-flex", alignItems: "center", gap: "6px"}}>
+            ← Back
+          </button>
           
           <div style={{display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem", "@media(max-width: 768px)": {gridTemplateColumns: "1fr"}}}>
             <div style={{aspectRatio: "4/3", background: "var(--surface)", borderRadius: "12px", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "3rem"}}>
