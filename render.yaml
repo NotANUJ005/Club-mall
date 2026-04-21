@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: club-mall
+    runtime: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_EXPIRES_IN
+        value: 7d
+      - key: MONGO_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: https://club-mall.vercel.app,http://localhost:5173,http://localhost:5174

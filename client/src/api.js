@@ -1,5 +1,9 @@
-// API base URL: empty string in dev (Vite proxy handles it), full Render URL in production
-const BASE_URL = import.meta.env.VITE_API_URL || "";
+// In local development we use the Vite proxy.
+// In production, prefer an explicit Vercel env var and fall back to the current Render API URL.
+const BASE_URL = (import.meta.env.VITE_API_URL || (import.meta.env.DEV ? "" : "https://club-mall.onrender.com")).replace(
+  /\/$/,
+  ""
+);
 
 export async function fetchJson(url, options = {}) {
   const token = options.token;
