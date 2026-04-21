@@ -15,7 +15,7 @@ const port = process.env.PORT || 5000;
 const isProduction = process.env.NODE_ENV === "production";
 
 // ─── CORS ────────────────────────────────────────────────────────────────────
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:5173,http://localhost:5174")
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:5173,https://club-mall.vercel.app/,http://localhost:5174")
   .split(",")
   .map((o) => o.trim());
 
