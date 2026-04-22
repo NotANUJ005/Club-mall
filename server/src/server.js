@@ -15,31 +15,15 @@ const port = process.env.PORT || 5000;
 const isProduction = process.env.NODE_ENV === "production";
 
 // ─── CORS ────────────────────────────────────────────────────────────────────
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || "http://localhost:5173,http://localhost:5174")
+const allowedOrigins = (process.env.ALLOWED_ORIGINS || "https://ClubMall.vercel.app,http://localhost:5173,http://localhost:5174")
   .split(",")
   .map((o) => o.trim());
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      // 1. Allow internal/server-to-server requests (no origin)
-      if (!origin) return callback(null, true);
-
-      // 2. Allow explicitly listed origins
-      if (allowedOrigins.includes(origin)) return callback(null, true);
-
-      // 3. Allow Vercel preview/production domains
-      if (origin.endsWith(".vercel.app")) return callback(null, true);
-
-      // 4. Otherwise reject
-      console.warn(`CORS blocked: ${origin}`);
-      callback(new Error(`CORS: origin ${origin} not allowed`));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-  })
-);
+app.use(cors({
+  origin: ['https://ClubMall.vercel.app', 'http://localhost:5173', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true
+}));
 
 // ─── Security Headers ─────────────────────────────────────────────────────────
 app.use((req, res, next) => {
